@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Mini-App</title>
+    <link rel="stylesheet" href="static/app.css">
+</head>
+<body>
+    <h1>Завантажити зображення</h1>
+
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="fileInput" name="file" accept="image/*">
+    </form>
+
+    <h2>Або вкажіть URL зображення</h2>
+    <form id="urlForm">
+        <input type="text" id="urlInput" placeholder="Введіть URL зображення">
+    </form>
+
+    <p id="responseMessage"></p>
+    <button id="closeButton">Закрити</button>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        const tg = window.Telegram.WebApp;
+        console.log("Telegram WebApp initialized");
+
+        tg.expand(); // Розширює додаток на весь екран
+
+        // Показуємо MainButton після вибору файлу
+        document.getElementById('fileInput').addEventListener('change', () => {
+            if (document.getElementById('fileInput').files.length > 0) {
+                console.log("File selected, showing MainButton");
+                tg.MainButton.setText("Завантажити"); // Додамо текст до MainButton
+                tg.MainButton.show();
+            } else {
+                console.log("No file selected, hiding MainButton");
+                tg.MainButton.hide();
+            }
+        });
+
+        // Показуємо MainButton після введення URL
+        document.getElementById('urlInput').addEventListener('input', () => {
+            const url = document.getElementById('urlInput').value;
+            if (url) {
+                console.log("URL entered, showing MainButton");
+                tg.MainButton.setText("Завантажити за URL");
+                tg.MainButton.show();
+            } else {
+                console.log("No URL entered, hiding MainButton");
+                tg.MainButton.hide();
+            }
+        });
+
+        tg.onEvent('mainButtonClicked', () => {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            const url = document.getElementById('urlInput').value;
+
+            if (file) {
+                console.log("MainButton clicked with file selected");
+                const formData = new FormData();
+                formData.append('file', file);
+
+                fetch('/upload', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("File uploaded, sending data to bot:", data.url);
+                    tg.sendData(data.url); // Відправляємо URL зображення
+                })
+                .catch(error => {
+                    console.error('Error uploading file:', error);
+                });
+            } else if (url) {
+                console.log("MainButton clicked with URL entered");
+                tg.sendData(url); // Відправляємо URL зображення
+            } else {
+                console.log("No file or URL to send");
+            }
+        });
+
+        // Додавання обробника для кнопки закриття
+        document.getElementById('closeButton').addEventListener('click', () => {
+            tg.close();
+            console.log("close window");
+        });
+
+    </script>
+</body>
+</html>
