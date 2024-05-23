@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  flask_app:
+    build:
+      context: ./flask_app
+    volumes:
+      - ./flask_app/static:/app/static
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_ENV=production
+
+  telegram_bot:
+    build:
+      context: ./telegram_bot
+    environment:
+      - BOT_TOKEN=${BOT_TOKEN}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - WEBAPP_URL=${WEBAPP_URL}
