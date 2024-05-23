@@ -5,21 +5,18 @@ from PIL import Image
 import os
 import io
 import logging
-from dotenv import load_dotenv
 
-
-load_dotenv()
 
 # Login settings
 logging.basicConfig(level=logging.INFO,
-                    filename='flask_bot.log',
+                    filename='../flask_bot.log',
                     filemode='w',
                     format="%(asctime)s %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
-UPLOAD_FOLDER = 'uploads'
+UPLOAD_FOLDER = './uploads'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 10 * 1024 * 1024
 
@@ -112,4 +109,5 @@ def uploaded_file(filename):
 
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=False)
+    # app.run(host='0.0.0.0', port=5000, debug=False)
+    app.run(port=5000, debug=True)
