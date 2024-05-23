@@ -1,0 +1,14 @@
+aiofiles==23.2.1
+aiogram==2.25.2
+aiogram-logging==0.0.1
+aiohttp==3.8.6
+aioinflux==0.9.0
+aiosignal==1.3.1
+annotated-types==0.7.0
+anyio==4.3.0
+async-timeout==4.0.3
+aiogram-logging
+openai
+requests
+python-dotenv
+httpx
